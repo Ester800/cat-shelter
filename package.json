@@ -1,7 +1,6 @@
 {
   "name": "cat-shelter",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +16,9 @@
   },
   "homepage": "https://github.com/Ester800/cat-shelter#readme",
   "dependencies": {
+    "node": "^15.4.0",
     "nodemon": "^2.0.7"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }

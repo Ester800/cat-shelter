@@ -1,14 +1,18 @@
-console.log('Hello world!');
-console.log("Great work");
+const http = require('http');
+const port = 3000;
+const handlers = require('./handlers');
 
-const fs = require('fs');
-const server = require('http').createServer();
+http.createServer((req, res) => {
+    // res.writeHead(200, {
+    //     'Content-type': 'text/plain'
+    // });
 
-server.on('request', (req, res) => {
-    const src = fs.createReadStream('./bigfile.txt');
-    src.on('data', data => res.write(data));
-    src.on('end', () => res.end());
-});
+    for (let handler of handlers) {
+        if (!handler(req, res)) {
+            break;
+        }
+    }
+    // res.write('Hello JS World');
+    // res.end();
 
-server.listen(5000);
-console.log('port 5000 is listening');
+}).listen(port);
