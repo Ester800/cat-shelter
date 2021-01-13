@@ -1,120 +1,46 @@
 const url = require('url');
-const fs = require('fs');
 const path = require('path');
-const qs = require('querystring');
-const formidable = require('formidable');
-const cats = require('../data/cats.json');
-const breeds = require('../data/breeds.json');
-
+const fs = require('fs');
+const cats = require('../database/cats.json');
+const breeds = require('../database/breeds.json');
+const http = require('http');
 
 module.exports = (req, res) => {
     const pathname = url.parse(req.url).pathname;
+    let filePath;
 
-    if(pathname === '/' && req.method === 'GET') {
-        let filePath = path.normalize(
+    if (pathname === '/' && req.method === 'GET') {
+        filePath = path.normalize(
             path.join(__dirname, '../views/home/index.html')
         );
 
-        fs.readFile(filePath, (err, data) => {
-            if(err) {
-                console.log(err);
+        const index = fs.createReadStream(filePath);
 
-                res.writeHead(404, {
-                    "content-type": "text/plain"
-                });
+        index.on('data', (data) => {
 
-                res.write('add not found');
-                res.end();
-                return;
-            }
+            const modifiedCats = cats.map(cat => `
+            <li>
+            <img src="${'./content/images/' + cat.image}" alt="${cat.name}">
+                    <h3>${cat.name}</h3>
+                    <p><span>Breed: </span>${cat.breed}</p>
+                    <p><span>Description: </span>${cat.description}</p>
+                    <ul class="buttons">
+                        <li class="btn edit"><a href="/cats-edit/${cat.id}">Change Info</a></li>
+                        <li class="btn delete"><a href="/cats-find-new-home/${cat.id}">New Home</a></li>
+                    </ul>
+                    </li>`);
 
-            res.writeHead(200, {
-                "content-type": "text/html"
-            });
+            const modifiedData = String(data).replace('{{cats}}', modifiedCats);
 
-            res.write(data);
-            res.end();
+            res.write(modifiedData);
         });
-        
-        //res.redirect('/views/home');
-    } else if (pathname === '/cats/add-cat' && req.method === 'GET') {
-            let filePath = path.normalize(path.join(__dirname, '../views/addCat.html'));
-    
-            const index = fs.createReadStream(filePath);
-    
-            index.on('data', (data) => {
-                let catBreedPlaceholder = breeds.map((breed) => `<option value="${breed}">${breed}</option>`);
-                let modifiedData = data.toString().replace('{{catBreeds}}', catBreedPlaceholder);
-                res.write(modifiedData);
-            });
-    
-            index.on('end', () => {
-                res.end();
-            });
-            index.on('error', (err) => {
-                console.log('err');
-            });
 
-    } else if (pathname === '/cats/add-breed' && req.method === 'GET') {
-            let filePath = path.normalize(path.join(__dirname, '../views/addBreed.html'));
+        index.on('end', () => res.end());
 
-            const index = fs.createReadStream(filePath);
-
-            index.on('data', (data) => {
-                res.write(data);
-            });
-
-            index.on('end', () => {
-                res.end();
-            });
-            index.on('error', (err) => {
-                console.log('err');
-            });    
-
-    } else if (pathname === '/cats/add-cat' && req.method === 'POST') {
-    
-            const index = fs.createReadStream(filePath);
-    
-            index.on('data', (data) => {
-                res.write(data);
-            });
-            index.on('end', () => {
-                res.end();
-            });
-            index.on('error', (err) => {
-                console.log('err');
-            });  
-
-    } else if (pathname === '/cats/add-breed' && req.method === 'POST') {
-        let formData = '';
-        req.on('data', (data) => {
-            //console.log('the breed form data is ', data.toString());
-            formData += data;
-            //console.log('the new data is ', formData)
-            let parsedData = qs.decode(formData);
-            console.log("the parsed data is", parsedData.breed);
-    
-
-        fs.readFile('./data/breeds.json', 'utf8', (err, data) => {
-            if(err) {
-                console.log(err);
-                return
-            }
-            
-            let currentBreeds = JSON.parse(data);
-            currentBreeds.push(parsedData.breed);
-            let updatedBreeds = JSON.stringify(currentBreeds);
-            console.log('the updated ready to save data is', updatedBreeds);
-
-            fs.writeFile('./data/breeds.json', updatedBreeds, 'utf-8', () => {
-                console.log('The breed was uploaded successfully...');
-            });
-
-            res.writeHead(301, { location: '/' });
-            res.end();
+        index.on('error', (err) => {
+            console.log(err);
         });
-    });
- 
+
     } else {
         return true;
     }
