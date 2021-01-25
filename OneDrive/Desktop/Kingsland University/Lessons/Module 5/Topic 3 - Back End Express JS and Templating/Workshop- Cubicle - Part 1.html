@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<!-- saved from url=(0084)https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--For security reasons, meta tags must live before the anything else-->
+		<script src="chrome-extension://lkcjlnjfpbikmcmbachjpdbijejflpcm/js/steem_keychain.js"></script><script src="chrome-extension://jhgnbkkipaallpehbohjmkbjofjdmeid/js/steem_keychain.js"></script>
+		<meta name="application-name" content="Populi">
+		<title>PI5 -: 03. JS Back End ExpressJS and Templating</title>
+
+		<link rel="apple-touch-icon" sizes="180x180" href="https://kingsland.populiweb.com/apple-touch-icon.png?v=oLJb48QEl0">
+		<link rel="icon" type="image/png" sizes="32x32" href="https://kingsland.populiweb.com/favicon-32x32.png?v=oLJb48QEl0">
+		<link rel="icon" type="image/png" sizes="16x16" href="https://kingsland.populiweb.com/favicon-16x16.png?v=oLJb48QEl0">
+		<link rel="manifest" href="https://kingsland.populiweb.com/site.webmanifest?v=oLJb48QEl0">
+		<link rel="mask-icon" href="https://kingsland.populiweb.com/safari-pinned-tab.svg?v=oLJb48QEl3" color="#1b2b36">
+		<link rel="shortcut icon" href="https://kingsland.populiweb.com/favicon.ico?v=oLJb48QEl03">
+		<meta name="apple-mobile-web-app-title" content="Populi">
+		<meta name="application-name" content="Populi">
+		<meta name="msapplication-TileColor" content="#2bb0ec">
+		<meta name="theme-color" content="#ffffff">
+
+		<!-- Stylesheets -->
+		<link rel="stylesheet" href="./Workshop- Cubicle - Part 1_files/calendarstyle.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="./Workshop- Cubicle - Part 1_files/global.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="./Workshop- Cubicle - Part 1_files/screen.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="./Workshop- Cubicle - Part 1_files/plugins.css" type="text/css" media="screen, projection">
+		<link rel="stylesheet" href="./Workshop- Cubicle - Part 1_files/print.css" type="text/css" media="print">
+		<style type="text/css">
+			body>.header { background-color: #211f47; }
+    body>.header h1 { color: #ffffff; }
+    body>.header .nav a { color: #ffffff; }
+body>.header .nav a::after { background-color: #ffffff; }
+    		</style>
+
+                    <script type="text/javascript">
+                sessionStorage.setItem('tab_id', 1611429179222);
+            </script><script id="mew-web3script" type="application/javascript" async="false" src="chrome-extension://nlbmnnijcnlegkjjpcfjclmcfggfefdm/js/cxWeb3.js"></script><script type="application/javascript" async="false" id="mew-extensionId">(function(t){window.extensionID=t})("nlbmnnijcnlegkjjpcfjclmcfggfefdm")</script>
+            
+        <script type="text/javascript" src="./Workshop- Cubicle - Part 1_files/college_management.js.download"></script>
+        <script type="text/javascript" src="./Workshop- Cubicle - Part 1_files/flowplayer.js.download"></script>
+        <script type="text/javascript" src="./Workshop- Cubicle - Part 1_files/flowplayer.hlsjs.min.js.download"></script>
+        <script type="text/javascript" src="./Workshop- Cubicle - Part 1_files/jquery.canvasjs.js.download"></script>
+        <script type="text/javascript" src="./Workshop- Cubicle - Part 1_files/tinymce.min.js.download"></script>
+
+		<!-- Global setup -->
+		<script type="text/javascript">
+			var iLoggedInUserID = '21446353';
+			var iLoggedInOrgID = '3643';
+			var iMouseX = 0;
+			var iMouseY = 0;
+			var oScroll = {};
+
+			//Page init
+			$(document).ready(function(){
+				//when the page loads reset the search help input value
+				$('#search').val('');
+
+				//show or hide the input label for Search Help
+				buttonSetup();
+
+				$.jpi({default_page_title: 'Populi - Kingsland University'});
+
+				//make sure a tab is highlighted
+				if ( !$('.js-header-tab.current').length ) {
+					changeTabs(window.location.href);
+				}
+			}).ajaxSend( function(event, request){
+				//We don't always use ajax when navigating (e.g. switching "apps" -> College Management to Financial) so this won't work 100% of the time for the timeout
+				request.setRequestHeader("X-UserID", (iLoggedInUserID||null));
+				request.setRequestHeader("X-Current-Location", window.location.pathname + window.location.search);  //Used to return us to the correct page on timeout;
+			});
+
+			//Watch for mouse and keyboard activity and stop them from timing out
+							idle();
+				
+			//Have to do it here after canvasjs fully loads, apparently
+			CanvasJS.addColorSet('blue', [
+				'#4661EE',
+			]);
+		</script>
+	</head>
+	<body class="os-type-windows            pace-done no-scroll" data-new-gr-c-s-check-loaded="14.991.0" data-gr-ext-installed="" data-new-gr-c-s-loaded="14.991.0"><div class="pace  pace-inactive"><div class="pace-progress" data-progress-text="100%" data-progress="99" style="transform: translate3d(100%, 0px, 0px);">
+  <div class="pace-progress-inner"></div>
+</div>
+<div class="pace-activity"></div></div>
+
+		<div class="loading_throbber" style="display: none;"><div class="cp-spinner"></div></div>
+		    <div class="srch-history-container js-srch-history-container no-print">
+        <div class="srch-history-header">
+            <div class="srch-history-header-left">
+            </div>
+            <div class="srch-history-header-middle">
+                <h2>Search History</h2>
+            </div>
+            <div class="srch-history-header-right">
+                <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="fal fa-times fa-2x srch-history-close js-srch-history-close steem-keychain-checked"></a>
+            </div>
+        </div>
+        <div class="srch-history-body">
+            <div class="srch-history-content">
+                <div class="js-srch-history-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="adv-srch-container js-adv-srch-container no-print">
+        <div class="adv-srch-header">
+            <div class="adv-srch-header-left">
+            </div>
+            <div class="adv-srch-header-middle">
+                <form id="adv-srch-form" action="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" onsubmit="advanced_search_typewatch(); return false;">
+                    <input type="submit" style="display: none" value="Search">
+                    <input type="text" class="adv-srch-input js-adv-srch-input mousetrap" placeholder="Search Populi" spellcheck="false">
+                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="far fa-search adv-srch-execute js-adv-srch-execute fa-lg steem-keychain-checked" aria-label="Execute search"></a>
+                    <div class="adv-srch-field-container js-adv-srch-field-container">
+                                            </div>
+                    <div class="adv-srch-filter js-adv-srch-filter">
+                                                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="adv-srch-filter-option js-adv-srch-filter-option steem-keychain-checked" id="js-adv-srch-filter-tab-_" data-model="_">All</a>
+                                                        <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="adv-srch-filter-option js-adv-srch-filter-option steem-keychain-checked" id="js-adv-srch-filter-tab-PersonModel" data-model="PersonModel">People</a>
+                                                        <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="adv-srch-filter-option js-adv-srch-filter-option steem-keychain-checked" id="js-adv-srch-filter-tab-CourseOfferingCatalogCourse" data-model="CourseOfferingCatalogCourse">Courses</a>
+                                                        <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="adv-srch-filter-option js-adv-srch-filter-option steem-keychain-checked" id="js-adv-srch-filter-tab-Group" data-model="Group">Groups</a>
+                            <div style="display:inline-block; position:relative; text-align:center; vertical-align:middle; margin:-3px 0 0 -3px;">
+			<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="adv-srch-filter-option js-adv-srch-filter-dropdown show_dropdown steem-keychain-checked">
+			More		</a>
+		
+	<div class="  drop-down" style="">
+		<div class="drop-down-arrows">
+			<div class="drop-down-arrow-bottom"></div>
+			<div class="drop-down-arrow-top"></div>
+		</div>
+		<div class="drop-down-list">
+			<ul>
+										<li>
+							<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="drop-down-list-link allow_propagation steem-keychain-checked" id="adv-srch-filter-dropdown-_" data-model="_">
+								All							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="drop-down-list-link allow_propagation steem-keychain-checked" id="adv-srch-filter-dropdown-PersonModel" data-model="PersonModel">
+								People							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="drop-down-list-link allow_propagation steem-keychain-checked" id="adv-srch-filter-dropdown-CourseOfferingCatalogCourse" data-model="CourseOfferingCatalogCourse">
+								Courses							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="drop-down-list-link allow_propagation steem-keychain-checked" id="adv-srch-filter-dropdown-Group" data-model="Group">
+								Groups							</a>
+						</li>
+									</ul>
+		</div>
+	</div>
+</div>                    </div>
+                </form>
+            </div>
+            <div class="adv-srch-header-right">
+                <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="fal fa-times fa-2x adv-srch-close js-adv-srch-close steem-keychain-checked"></a>
+            </div>
+        </div>
+        <div class="adv-srch-body">
+            <div class="adv-srch-content">
+                <div class="adv-srch-invite adv-srch-message js-adv-srch-invite">Type above to see search results</div>
+
+                <div class="adv-srch-results-loading js-adv-srch-results-loading">
+                    <div class="cp-spinner cp-spinner-medium srch-results-loading-spinner"></div>
+                </div>
+                <div class="adv-srch-results js-adv-srch-results">
+                </div>
+            </div>
+        </div>
+    </div>		<header class="header clear">
+			<div id="account_wrapper">
+    <div id="account" class="clear">
+
+        <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#content" class="skip_to_content steem-keychain-checked">Skip header navigation</a>
+
+                    <span class="account_right">
+                <div class="srch js-srch" role="search">
+                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="srch-placeholder js-srch-placeholder steem-keychain-checked" aria-label="Show search">
+                        <span style="color:inherit !important;" class="far fa-search" aria-hidden="true"></span> Search                    </a>
+                    <form id="search-form" class="srch-searchbox js-srch-searchbox" onsubmit="return false;">
+                        <input type="submit" class="js-srch-submit" style="display: none" value="Search">
+                        <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="far fa-search srch-execute js-srch-execute steem-keychain-checked" aria-label="Execute search"></a>
+
+                        <input type="text" class="srch-search-input js-srch-search-input mousetrap" placeholder="Search Populi" data-prior="" spellcheck="false" aria-label="Search input">
+
+                        <div class="srch-searchbox-dropdown js-srch-searchbox-dropdown">
+
+                            <div class="js-srch-results js-srch-results-recommendations srch-results-recommendations">
+
+                                <div class="js-srch-results-loading srch-results-loading">
+                                    <div class="cp-spinner cp-spinner-medium srch-results-loading-spinner"></div>
+                                </div>
+                                <div class="js-srch-recommendations srch-recommendations">
+                                    <ol class="js-srch-results-list srch-searchbox-dropdown-list">
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div class="js-srch-results js-srch-results-recent">
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div style="display:inline-block; position:relative; text-align:center; vertical-align:middle; margin-right:4px;  top:-1px;">
+			<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="account-user show_dropdown steem-keychain-checked" aria-label="Account dropdown" style="opacity:.9;">
+			<span class="user_thumbnail" style="background-image:url(https://d2h8qhew3fx4cx.cloudfront.net/5345d73804aed720dceba1259566ec74/5bdaedc3de43fc3533daac58218340b7_small.jpeg)"></span><span aria-hidden="true" style="margin-left:4px; position:relative; top:1px;" class="fal fa-angle-down fa-inherit fa-lg"></span>		</a>
+		
+	<div class="drop-down-right  drop-down" style="">
+		<div class="drop-down-arrows">
+			<div class="drop-down-arrow-bottom"></div>
+			<div class="drop-down-arrow-top"></div>
+		</div>
+		<div class="drop-down-list">
+			<ul>
+										<li>
+							<a href="https://kingsland.populiweb.com/router/contacts/people/21446353/show" class="drop-down-list-link allow_propagation steem-keychain-checked">
+								My Profile							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/router/myprofile/settings/index" class="drop-down-list-link allow_propagation steem-keychain-checked">
+								Settings							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/router/logins/logout" class="drop-down-list-link allow_propagation steem-keychain-checked">
+								Log Out							</a>
+						</li>
+									</ul>
+		</div>
+	</div>
+</div><div style="display:inline-block; position:relative; text-align:center; vertical-align:middle; top:-2px;">
+			<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="account_help show_dropdown steem-keychain-checked" aria-label="Help dropdown">
+			Help<span aria-hidden="true" style="margin-left:4px; position:relative; top:2px;" class="fal fa-angle-down fa-inherit fa-lg"></span>		</a>
+		
+	<div class="drop-down-right  drop-down" style="">
+		<div class="drop-down-arrows">
+			<div class="drop-down-arrow-bottom"></div>
+			<div class="drop-down-arrow-top"></div>
+		</div>
+		<div class="drop-down-list">
+			<ul>
+										<li>
+							<a href="https://kingsland.populiweb.com/internal/go_to_zendesk.php?pageNav=1&amp;return_to=support.populiweb.com/hc/en-us/" class="drop-down-list-link allow_propagation steem-keychain-checked" target="help">
+								Search the Knowledge Base							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/internal/go_to_zendesk.php?pageNav=1&amp;return_to=support.populiweb.com/hc/en-us/requests/new" class="drop-down-list-link allow_propagation steem-keychain-checked" target="help">
+								Open a Support Request							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/internal/go_to_zendesk.php?pageNav=1&amp;return_to=support.populiweb.com/hc/en-us/requests" class="drop-down-list-link allow_propagation steem-keychain-checked" target="help">
+								View My Requests							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/internal/go_to_zendesk.php?pageNav=1&amp;return_to=support.populiweb.com/hc/en-us/community/posts/new?community_post%5Btopic_id%5D=200905467" class="drop-down-list-link allow_propagation steem-keychain-checked" target="help">
+								Make a Feature Request							</a>
+						</li>
+												<li>
+							<a href="https://kingsland.populiweb.com/internal/go_to_zendesk.php?pageNav=1&amp;return_to=support.populiweb.com/hc/en-us/community/topics/200905527" class="drop-down-list-link allow_propagation steem-keychain-checked" target="help">
+								Visit the User Forum							</a>
+						</li>
+									</ul>
+		</div>
+	</div>
+</div>                <!-- <a href="/internal/go_to_zendesk.php?pageNav=1" class="account_help" target="help">Help</a> -->
+            </span>
+                            <nav>
+                    <a href="https://kingsland.populiweb.com/internal/common/home.php" class="active_app steem-keychain-checked" id="app_management">Home</a>
+                    <a href="https://kingsland.populiweb.com/router/folders/index" id="app_files" class="steem-keychain-checked">Files</a>
+                                        <a href="https://kingsland.populiweb.com/calendar/index.php" id="app_calendar" class="steem-keychain-checked">
+                        Calendar                    </a>
+                                </nav>
+            
+    	<div id="accountHiddenDiv" style="display:none;"></div>
+    </div>
+    
+    <script type="text/javascript">
+        function goToLogin(psParams){
+            psParams = psParams ? psParams : '';
+
+            if($('#currentLocation').length){
+                sUrl = $('#currentLocation').val();
+            }
+            else{
+                sUrl = window.location.pathname + window.location.search;
+            }
+
+            sParams = psParams ? '?' + psParams : '';
+
+            sUrl = sUrl.replace('?logOut=1', '');
+
+            window.location = '/router/logins/index?return_to=' + encodeURI(sUrl) + sParams;
+        }
+
+        function hideNotice(poThis, piNoticeID){
+            $.ajax({
+                url: '/account.php',
+                data: {task: 'HIDE_NOTICE', noticeID: piNoticeID}
+            });
+
+            $(poThis).parent().parent().slideUp();
+        }
+    </script>
+</div><!-- /end #account_wrapper -->
+			<div style="position:relative;">
+						<h1>
+									<img id="logo2" src="./Workshop- Cubicle - Part 1_files/kingslandlogoo.png" alt="">
+									<span class="js-header-text">
+					Kingsland University				</span>
+			</h1>
+								<nav id="management_tabs" class="app_tabs nav clear">
+						<a href="https://kingsland.populiweb.com/internal/common/home.php" onclick="return navigateA(this);" id="tab_home" class="js-header-tab steem-keychain-checked">Home</a>
+						<a href="https://kingsland.populiweb.com/router/contacts/people/21446353/show" id="tab_profile" class="js-header-tab remote_nav steem-keychain-checked">My Profile</a>
+													<a href="https://kingsland.populiweb.com/router/user/my_course_offerings" id="tab_my_courses" class="js-header-tab remote_nav steem-keychain-checked">My Courses</a>
+														<a href="https://kingsland.populiweb.com/router/contacts/people/directory" id="tab_contacts" class="js-header-tab remote_nav steem-keychain-checked">Directory</a>
+												</nav>
+								</div>
+		</header><!--/end header-->
+
+		<!-- Utility Stuff -->
+		<div id="tempDiv" style="display:none;"></div>
+		<form name="utilForm" action="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" method="post">
+			<input type="hidden" name="currentLocation" id="currentLocation" value="">
+			<!--<input type="hidden" name="currentHash" id="currentHash" value="" />-->
+			<input type="hidden" name="loggedInUser" id="loggedInUser" value="21446353">
+		</form>
+
+		<main id="content" role="main"><div id="main" class="clear">
+    <div class="farleftcol course_offering_left_col">
+    <div class="course_thumbnail_wrap js-model_image_container">
+        <div class="course_thumbnail">
+            <img alt="course image" src="./Workshop- Cubicle - Part 1_files/120f01c9604ba3f5bc16403e59e700cb_large.jpeg" style="width:100%;height:100%;">
+        </div>    </div>
+    <div class="side course_offering_menu">
+                    <input type="hidden" id="track_student_course_time_9863581">
+            <input type="hidden" class="js-time_tracker" name="track[course]" value="9863581" data-type="course">
+            <ul>
+                                    <li class="">
+                        <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/dashboard">Dashboard</a>
+                    </li>
+                                    <li class="">
+                    <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/syllabus">Syllabus</a>
+                </li>
+                                    <li class="selected">
+                        <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/index">Lessons</a>
+                    </li>
+                                        <li class="">
+                        <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/folders/index">Files</a>
+                    </li>
+                                        <li class="">
+                        <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/assignments/index">Assignments</a>
+                    </li>
+                                        <li class="">
+                        <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/discussions/index">Discussions</a>
+                    </li>
+                                    <li>
+                    <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/calendar">Calendar</a>
+                </li>
+
+                                    <li class="">
+                        <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/roster">Roster</a>
+                    </li>
+                                </ul>
+                        <script type="text/javascript">
+                if(typeof trackStudentCourseTimerID != 'undefined'){
+                    clearTimeout(trackStudentCourseTimerID);
+                }
+
+                $(document).ready(trackStudentCourseTime);
+
+                var trackStudentCourseTimerID;
+                function trackStudentCourseTime(){
+                    trackStudentCourseTimerID = setTimeout(function(){
+                        if($('#track_student_course_time_9863581').length){
+                            var data = {track:{}};
+                            $('input.js-time_tracker').each(function(i, v){
+                                data['track'][i] = {type: $(this).data('type'), id: $(this).val()};
+                            });
+
+                            var playing = $('.js-embedded_media.is-playing');
+                            if (playing.length){
+                                data['media_playback'] = {};
+                                playing.each(function(i, v){
+                                    data['media_playback'][$(this).data('media-id')] = {play_time: $(this).data('play-time'), last_position: $(this).data('last-position'), hash: $(this).data('view-hash')};
+                                });
+                            }
+
+                            $.post('/router/courseofferings/9863581/track_student_time', data, trackStudentCourseTime())
+                            .fail(function(response){
+                                if(response.status == 401) {
+                                    timeout();
+                                }
+                            });
+                        }
+                    }, 60000);
+                }
+            </script>
+                </div>
+</div>	<div class="controlbar">
+        <span class="rightcontrols">
+                    </span>
+        <h3 class="course_offering_name">
+            PI5 -: Zero to Blockchain JS Web        </h3>
+	</div>
+    <div class="singlecol course_offering_singlecol">
+        <div class="column_header">
+            <div class="rightcontrols">
+                            </div>
+            <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/index" class="remote_nav">
+                <span class="fal fa-angle-left fa-inherit fa-back_arrow"></span>Lessons            </a>
+        </div>
+        <h2 style="font-weight:bold; font-size:1.6em;">
+            03. JS Back End ExpressJS and Templating        </h2>
+                <div id="colwrap">
+            <div id="col1">
+                                        <input type="hidden" class="js-time_tracker" name="track[lesson_page]" value="12481603" data-type="lesson_page">
+                                                        <div id="section_47468143" class="js-section lesson-section lesson-section-file " data-section-id="47468143">
+                                    				<iframe class="document_viewer js-resizable" src="./Workshop- Cubicle - Part 1_files/show.html"></iframe>
+
+				<script type="text/javascript">
+					var VIEWER_DEBUG = false;
+					$(document).ready(function(){
+						$(window).off('message');
+						$(window).on('message', listener);
+					});
+
+					
+					function listen_for_show_report(response){
+						$.post(response.url, {}, function(html){
+					        tb_remove();
+
+					        if ($('#file_viewer_container').length){
+					            $('#file_viewer_container').replaceWith(html);
+					        }
+					        else {
+					            $('#content').append(html);
+					        }
+
+					        //bind esc to remove the viewer
+					        $(document).on('keyup', function(e){
+					            var keycode = e == null ? event.keyCode : keycode = e.which;
+					            if (keycode == 27 && !$('#facebox').length){
+					                remove_file_viewer();
+					            }
+					        });
+						});
+					}
+
+					//Handle incoming events - postMessage of json {event_name: 'bla', ...} calls listen_for_bla({event_name: 'bla', ...})
+					function listener(event){
+						event = event.originalEvent;
+
+						//Convert to json - if that fails, do nothing
+						var json_response = jQuery.parseJSON(event.data);
+						if ( typeof json_response =='object' && typeof json_response.event_name != 'undefined' ) {
+							if ( VIEWER_DEBUG ) {
+						      console.log("Receiving event from child: ");
+						      console.log(json_response);
+						    }
+
+							//Send to handler
+							var function_name = 'listen_for_' + json_response.event_name;
+							if (typeof window[function_name] == 'function') {
+								window[function_name](json_response);
+							}
+						}
+					}
+				</script>
+				                                </div>
+                                                                <div id="section_47468149" class="js-section lesson-section lesson-section-file " data-section-id="47468149">
+                                    				<iframe class="document_viewer js-resizable" src="./Workshop- Cubicle - Part 1_files/show(1).html"></iframe>
+
+				<script type="text/javascript">
+					var VIEWER_DEBUG = false;
+					$(document).ready(function(){
+						$(window).off('message');
+						$(window).on('message', listener);
+					});
+
+					
+					function listen_for_show_report(response){
+						$.post(response.url, {}, function(html){
+					        tb_remove();
+
+					        if ($('#file_viewer_container').length){
+					            $('#file_viewer_container').replaceWith(html);
+					        }
+					        else {
+					            $('#content').append(html);
+					        }
+
+					        //bind esc to remove the viewer
+					        $(document).on('keyup', function(e){
+					            var keycode = e == null ? event.keyCode : keycode = e.which;
+					            if (keycode == 27 && !$('#facebox').length){
+					                remove_file_viewer();
+					            }
+					        });
+						});
+					}
+
+					//Handle incoming events - postMessage of json {event_name: 'bla', ...} calls listen_for_bla({event_name: 'bla', ...})
+					function listener(event){
+						event = event.originalEvent;
+
+						//Convert to json - if that fails, do nothing
+						var json_response = jQuery.parseJSON(event.data);
+						if ( typeof json_response =='object' && typeof json_response.event_name != 'undefined' ) {
+							if ( VIEWER_DEBUG ) {
+						      console.log("Receiving event from child: ");
+						      console.log(json_response);
+						    }
+
+							//Send to handler
+							var function_name = 'listen_for_' + json_response.event_name;
+							if (typeof window[function_name] == 'function') {
+								window[function_name](json_response);
+							}
+						}
+					}
+				</script>
+				                                </div>
+                                                                <div id="section_47468155" class="js-section lesson-section lesson-section-file " data-section-id="47468155">
+                                                <span class="fal fa-file-archive fa-2x fa-fw fa-pull-left"></span>
+            <div style="margin-left:44px;">
+                                    <strong class="bigger">
+                        <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/files/84447307/download" class="js-section_file_download" data-status-url="/router/courseofferings/9863581/lessons/12025903/pages/12481603/check_status.json">
+                            <span class="js-file_name_84447307">03. Cubicle-Workshop-Part-1-Resources.zip</span>
+                        </a>
+                    </strong>
+                                </div>
+                                            </div>
+                                                                <div id="section_46867105" class="js-section lesson-section lesson-section-assignment " data-section-id="46867105">
+                                            <span class="far fa-edit fa-2x fa-fw fa-pull-left"></span>
+        <div style="margin-left:44px;">
+                            <strong class="bigger">
+                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/assignments/24931297/show" class="remote_nav">Topic 3-ExpressJS-and-Templating-Workshop</a>                </strong>
+                <div style="color:#717171;">
+                                    </div>
+                        </div>
+                                        </div>
+                                                    <div style="margin: 32px 0 18px;">
+                                                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025909/show" class="js-next_lesson remote_nav show_hide" style="float:right;">Next Lesson<span class="fal fa-angle-right fa-inherit fa-forward_arrow"></span></a>
+                                                </div>
+                                </div><!-- /end #col1 -->
+            <div id="col2">
+                                <div class="box">
+                    <ul>
+                                                    <li>
+                                <strong>                                    <div class="js-page_12481603_link show_hide">
+                                                                                    <span id="page_12481603_completed_icon" class="far fa-fw fa-lg fa-check-square fa-green"></span>
+                                                                                    <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/pages/12481603/show">03. JS Back End ExpressJS and Templating</a>
+                                    </div>
+                                                                    </strong>
+                                                            </li>
+                                                </ul>
+                </div>
+
+                <div id="lesson_resources_container" class="remote_refresh js-refreshable_file_container" data-url="/router/courseofferings/9863581/lessons/12025903/show_resources">
+                        <ul class="columnnav" style="margin:0 0 18px; padding:0 9px 0;">
+                    <li>
+                <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="js-resource_tab" data-tab="assignments">Assignments</a>
+            </li>
+                        <li>
+                <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="js-resource_tab currentcolumnnav" data-tab="files">Files</a>
+            </li>
+                </ul>
+
+    <div class="js-assignments hide_show">
+            <div id="assignments" class="box col2list clear">
+        <ul>
+                    <li>
+                <a class="remote_nav" href="https://kingsland.populiweb.com/router/courseofferings/9863581/assignments/24931297/show">Topic 3-ExpressJS-and-Templating-Workshop</a>
+                            </li>    
+                    </ul>
+    </div>
+        </div>
+
+    <div class="js-discussions hide_show">
+            </div>
+
+    <div class="js-links hide_show">
+            </div>
+
+    <div class="js-files show_hide">
+            <div class="box col2list clear" id="filesList">
+        <ul>
+                            <li>
+                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/files/84447265/show?section_id=47468143" class="remote js-show_file_viewer " title="03. ExpressJS-and-Templating.pdf">
+                        <span class="fal fa-file-pdf fa-clr-pdf" style="margin-right:6px;"></span>03. ExpressJS-and-Templating.pdf</a>
+
+                    <span class="pill js-file_hidden_badge_84447265 hide_show">Hidden</span>
+                                    </li>
+                                <li>
+                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/files/84447295/show?section_id=47468149" class="remote js-show_file_viewer " title="03. Cubicle-Workshop-Part-1.pdf">
+                        <span class="fal fa-file-pdf fa-clr-pdf" style="margin-right:6px;"></span>03. Cubicle-Workshop-Part-1.pdf</a>
+
+                    <span class="pill js-file_hidden_badge_84447295 hide_show">Hidden</span>
+                                    </li>
+                                <li>
+                    <a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/files/84447307/show?section_id=47468155" class="remote js-show_file_viewer js-tip tooltipstered">
+                        <span class="fal fa-file-archive" style="margin-right:6px;"></span>03. Cubicle-Workshop-Part-1-Resourc...</a>
+
+                    <span class="pill js-file_hidden_badge_84447307 hide_show">Hidden</span>
+                                    </li>
+                        </ul>
+    </div>
+        </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.js-resource_tab').click(function(event){
+                event.preventDefault();
+                var $this = $(this);
+                var $container = $('#lesson_resources_container');
+                var show_class = '.js-' + $(this).data('tab');
+                $container.data('post', {selected_resource_tab: $this.data('tab')});
+
+                $('.js-resource_tab', $container).removeClass('currentcolumnnav');
+                $('.show_hide, .hide_show', $container).not( show_class ).filter('div').hide();
+                $('.show_hide, .hide_show', $container).filter( show_class ).filter('div').show();
+                $this.addClass('currentcolumnnav');
+            });
+        });
+    </script>
+                    </div>
+            </div><!-- /end #col2 -->
+        </div><!--/end #colwrap-->
+	</div><!-- /end .singlecol -->
+</div><!-- /end #main -->
+<input type="hidden" class="js-time_tracker" name="track[lesson]" value="12025903" data-type="lesson">
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.js-tip').tooltipster();
+
+        $(window).off('message');
+        $(window).on('message', listener).on('resize', resize_frames);
+
+        $('.js-start_conference').on('after_done.jpi', function(event){
+            $('#content').load('/router/courseofferings/9863581/lessons/12025903/pages/12481603/show');
+        });
+
+        $.each($('.js-section_content_frame'), function(){
+            var $frame = $(this);
+            //NOTE: can't beleive we're doing this for Safari, but the load event it busted in 5
+            //$('#displayLessonContentIFrame').one('load', function(){
+            setTimeout(function(){
+                $frame.get(0).contentWindow.document.body.innerHTML = '<div style="font-family:\'Lucida Grande\', Helvetica, sans-serif;">Loading...</div>';
+                $frame.get(0).contentWindow.document.location.replace($frame.data('url'));
+            }, 200);
+            //});
+        });
+
+                    $('.js-embedded_media').on('media_playback_finish', function(event, play_time){
+                if (play_time){
+                    var $section = $(this).closest('.js-section');
+                    var data = {sections: {}};
+                    data['sections'][$section.data('section-id')] = {id: $(this).data('media-id'), play_time: play_time, last_position: 0, hash: $(this).data('view-hash')};
+
+                    $.post('/router/courseofferings/9863581/lessons/12025903/pages/12481603/log_media_activity.json', data, function(response){
+                        toggle_links(response);
+                    }, 'json');
+                }
+            });
+
+            $('.js-trackable_course_link').click(function(event){
+                $.post($(this).data('track-url'), {}, function(response){
+                    toggle_links(response);
+                }, 'json');
+            });
+
+            $('.js-section_file_download').click(function(event){
+                event.preventDefault();
+                var status_url = $(this).data('status-url');
+                var section_id = $(this).closest('.js-section').data('section-id');
+
+                var url = $(this).attr('href');
+                open_in_new_tab(url);
+
+                check_page_status(status_url, section_id, 20);
+            });
+                });
+
+            $(document).on('before_remote.jpi', function(event, params){
+            log_media_playback();
+        });
+
+        $(window).on('beforeunload', function(event){
+            log_media_playback();
+        });
+
+        function toggle_links(response){
+            if (response['page_is_completed']){
+                $('#page_'+response['page_id']+'_completed_icon').removeClass('fa-square').addClass('fa-check-square fa-green');
+                $('.js-next_page').show();
+                            }
+            if (response['next_lesson_is_available']){
+                $('.js-next_lesson').show();
+            }
+            if (response['completed_section_ids'].length){
+                $.each(response['completed_section_ids'], function(i, id){
+                    $('.js-required_'+id+'_icon').addClass('fa-green');
+                    $('.js-required_'+id+'_index_icon').removeClass('fa-square').addClass('fa-check-square fa-green');
+                });
+            }
+        }
+
+        var status_timeout_id;
+        function check_page_status(status_url, section_id, num_checks){
+            status_timeout_id = setTimeout(function () {
+               $.post(status_url, {}, function(response){
+                    var i;
+                    if (response['page_is_completed']){
+                        num_checks = 0;
+                    }
+                    else {
+                        for(i = 0; i < response['completed_section_ids'].length; i++){
+                            if(section_id == response['completed_section_ids'][i]){
+                                num_checks = 0;
+                            }
+                        }
+                    }
+
+                    toggle_links(response);
+
+                    num_checks--;
+                    if (num_checks > 0){
+                        check_page_status(status_url, section_id, num_checks);
+                    }
+                }, 'json')
+                .fail(function(response){
+                    if(response.status == 401) {
+                        timeout();
+                    }
+                });
+            }, 3000);
+        }
+
+        function log_media_playback(){
+            if($('.js-embedded_media').length){
+                var data = {sections: {}};
+                $('.js-embedded_media').each(function(){
+                    var $section = $(this).closest('.js-section');
+                    var play_time = $(this).data('play-time');
+                    if (play_time){
+                        data['sections'][$section.data('section-id')] = {id: $(this).data('media-id'), play_time: play_time, last_position: $(this).data('last-position'), hash: $(this).data('view-hash')};
+                    }
+                });
+
+                if (data['sections'].length){
+                    $.post('/router/courseofferings/9863581/lessons/12025903/pages/12481603/log_media_activity.json', data);
+                }
+            }
+        }
+        
+    $('.js-delete_lesson').on('remote_deleted.jpi', function(){
+        window.location.replace("/router/courseofferings/9863581/lessons/index");
+    });
+
+    var VIEWER_DEBUG = false;
+    function send_frame_event( event_name, data ){
+        if (typeof data == 'undefined') {
+            data = {};
+        }
+
+        data.event_name = event_name;
+
+        if ( VIEWER_DEBUG ) {
+          console.log("Sending event to child: ");
+          console.log(data);
+        }
+
+        var section_id = data.section_id;
+        var json_data = JSON.stringify(data);
+        var $frame = $('#section_'+section_id+'_content_frame');
+        if ( $frame.length > 0 ) {
+            $frame.get(0).contentWindow.postMessage(json_data, '*');
+        }
+        //Else throw the event away - only weird events like premature clicks/blurs should happen before the document is fully loaded
+    }
+
+    //Handle incoming events - postMessage of json {event_name: 'bla', ...} calls listen_for_bla({event_name: 'bla', ...})
+    function listener(event){
+        event = event.originalEvent;
+
+        //Convert to json - if that fails, do nothing
+        var json_response = jQuery.parseJSON(event.data);
+        if ( typeof json_response =='object' && typeof json_response.event_name != 'undefined' ) {
+            if ( VIEWER_DEBUG ) {
+              console.log("Receiving event from child: ");
+              console.log(json_response);
+            }
+
+            //Send to handler
+            var function_name = 'listen_for_' + json_response.event_name;
+            if (typeof window[function_name] == 'function') {
+                window[function_name](json_response);
+            }
+        }
+    }
+
+    function listen_for_frame_size(response){
+        var $frame = $('#' + response.frame_id);
+        var height = response.height;
+
+        if(parseInt(height) > 0){
+            $frame.height(height);
+        }
+        else{
+            var window_height = $('.singlecol').height() - 81;
+            $frame.height(window_height);
+        }
+    }
+
+    function resize_frames(){
+        $.each($('.js-section_content_frame'), function(){
+            send_frame_event('request_size', {section_id: $(this).data('section_id')});
+        });
+    }
+</script><div id="file_viewer_container" class="file-viewer-container" style="background: rgba(0, 0, 0, 0.9); position:fixed; top:0px; left:0px; bottom:0px; right:0px; border:none; margin:0; padding:0; z-index:1297;">
+	<div class="file-viewer-controls" style="background-color: #eee; padding:9px 42px; line-height: 14px; border-bottom: 1px solid #ddd; min-height:52px; box-sizing:border-box;">
+					<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" style="position:absolute; left:12px; top:12px;" class="far fa-times fa-fw fa-lg js-remove_file_viewer"></a>
+			
+		<div class="toggle_container">
+		    <span class="bigger show_hide js-file_name_84447295" style="font-weight: bold;">03. Cubicle-Workshop-Part-1.pdf</span>
+
+		    <div class="smaller" style="color:#717171; margin-top: 6px;">
+									<span>Added by Jechris Soldevilla on Jan 19, 2021 8:15pm</span>
+									&nbsp;&nbsp;·&nbsp;&nbsp;
+				<span><span style="white-space: nowrap;">PDF Document</span>&nbsp;&nbsp;·&nbsp;&nbsp; <span style="white-space: nowrap;">Size: 1.2 MB</span></span>
+			</div>
+		</div>
+
+		<div style="display:inline-block; position:absolute; text-align:center; vertical-align:middle; right:12px; top:12px; padding:.225em;">
+			<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/show#" class="far fa-ellipsis-v fa-1_5x show_dropdown " aria-label="File dropdown">
+					</a>
+		
+	<div class="drop-down-right  drop-down" style="">
+		<div class="drop-down-arrows">
+			<div class="drop-down-arrow-bottom"></div>
+			<div class="drop-down-arrow-top"></div>
+		</div>
+		<div class="drop-down-list">
+			<ul>
+										<li>
+							<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/files/84447295/download" class="js-lesson_section_file_download popup drop-down-list-link allow_propagation">
+								Download							</a>
+						</li>
+									</ul>
+		</div>
+	</div>
+</div>	</div>
+
+	<div class="js-preview_container" style="position: absolute; inset: 53px 0px 0px; z-index: -1; height: 618px;">
+		<div style="position:relative; margin: 0 auto; display: table; top:50%; transform:translateY(-50%);">
+							<iframe class="document_viewer js-resizable" src="./Workshop- Cubicle - Part 1_files/show(2).html" style="height: 618px; width: 1010px;"></iframe>
+
+				<script type="text/javascript">
+					var VIEWER_DEBUG = false;
+					$(document).ready(function(){
+						$(window).off('message');
+						$(window).on('message', listener);
+					});
+
+											function listen_for_esc_pressed(response){
+							if (!$('#facebox').length){
+								remove_file_viewer();
+							}
+						}
+						
+					function listen_for_show_report(response){
+						$.post(response.url, {}, function(html){
+					        tb_remove();
+
+					        if ($('#file_viewer_container').length){
+					            $('#file_viewer_container').replaceWith(html);
+					        }
+					        else {
+					            $('#content').append(html);
+					        }
+
+					        //bind esc to remove the viewer
+					        $(document).on('keyup', function(e){
+					            var keycode = e == null ? event.keyCode : keycode = e.which;
+					            if (keycode == 27 && !$('#facebox').length){
+					                remove_file_viewer();
+					            }
+					        });
+						});
+					}
+
+					//Handle incoming events - postMessage of json {event_name: 'bla', ...} calls listen_for_bla({event_name: 'bla', ...})
+					function listener(event){
+						event = event.originalEvent;
+
+						//Convert to json - if that fails, do nothing
+						var json_response = jQuery.parseJSON(event.data);
+						if ( typeof json_response =='object' && typeof json_response.event_name != 'undefined' ) {
+							if ( VIEWER_DEBUG ) {
+						      console.log("Receiving event from child: ");
+						      console.log(json_response);
+						    }
+
+							//Send to handler
+							var function_name = 'listen_for_' + json_response.event_name;
+							if (typeof window[function_name] == 'function') {
+								window[function_name](json_response);
+							}
+						}
+					}
+				</script>
+							<div class="js-no_preview_available" style="display:none; vertical-align: middle; text-align: center; width: 350px; height: 350px; background-color: #eee; border: 1px solid #ddd; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px;">
+				<span class="fal fa-file-pdf fa-clr-pdf fa-5x"></span>
+
+				<div style="color:#aaa; margin: 18px 0;">
+					<span class="bigger"><span class="js-file_name_84447295" style="font-weight: bold; color:#555">03. Cubicle-Workshop-Part-1.pdf</span>&nbsp;&nbsp;·&nbsp;&nbsp;1.2 MB</span>
+					<br>
+					A preview is not available for this file.				</div>
+
+				<a href="https://kingsland.populiweb.com/router/courseofferings/9863581/lessons/12025903/files/84447295/download" class="fal fa-fw fa-2x fa-download popup js-tip js-lesson_section_file_download tooltipstered"></a>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.js-tip').tooltipster();
+			resize_preview();
+			$(window).on('resize', resize_preview);
+
+			$('.js-remove_file_viewer').click(function(event){
+				event.preventDefault();
+				maybe_log_lesson_media_activity();
+				remove_file_viewer();
+			});
+
+								$('.js-lesson_section_file_download').click(function(event){
+		                check_page_status('/router/courseofferings/9863581/lessons/12025903/pages/12481603/check_status.json', '47468149', 20);
+		            });
+											check_page_status('/router/courseofferings/9863581/lessons/12025903/pages/12481603/check_status.json', '47468149', 10);
+								});
+
+		$(window).on('beforeunload', function(event){
+            maybe_log_lesson_media_activity();
+        });
+
+		function resize_preview(){
+			var $container = $('.js-preview_container');
+			var $resizable = $container.find('.js-resizable');
+			var $parent = $('#file_viewer_container');
+			var $controls_height = $parent.find('.file-viewer-controls').outerHeight();
+			$container.css({'height': $parent.height() - $controls_height});
+			$container.css({'top': $controls_height});
+			if ($resizable.length){
+				var tag = $resizable.prop('tagName').toLowerCase();
+				if (tag == 'img'){
+					$resizable.css({'max-height': $container.height() - 18, 'max-width': $container.width() - 18});
+				}
+				else if (tag == 'iframe') {
+					$resizable.css({'height': $container.height(), 'width': $container.width()});
+				}
+				else if (tag == 'div'){
+					$resizable.css({'width': $container.width() - 18});
+				}
+			}
+		}
+
+		function maybe_log_lesson_media_activity(){
+					}
+	</script>
+</div></main><!--/end #content-->
+        <footer class="footer">
+                        <a href="https://populi.co/legal/terms" target="_blank" class="steem-keychain-checked">Terms of Service</a>
+            <span class="bullet">·</span>
+            <a href="https://populi.co/legal/aup" target="_blank" class="steem-keychain-checked">Acceptable Use Policy</a>
+            <span class="bullet">·</span>
+            <a href="https://kingsland.populiweb.com/internal/go_to_zendesk.php?pageNav=1" target="help" class="steem-keychain-checked">Support</a>
+            <span class="bullet">·</span>
+            <a href="https://status.populi.co/" target="help" class="steem-keychain-checked">System Status</a>
+            <span class="bullet">·</span>
+            <a href="https://populi.co/blog/" target="_blank" class="steem-keychain-checked">Blog</a>
+            <span class="bullet">·</span>
+            <a href="https://twitter.com/Populi" target="_blank" class="steem-keychain-checked">Twitter</a>
+            <span class="bullet">·</span>
+            <a href="https://www.facebook.com/populico" target="_blank" class="steem-keychain-checked">Facebook</a>
+            <span class="bullet">·</span>
+            <a href="https://www.instagram.com/populico" target="_blank" class="steem-keychain-checked">Instagram</a>
+            <span class="bullet">·</span>
+            <a href="https://www.youtube.com/c/populico" target="_blank" class="steem-keychain-checked">YouTube</a>
+            <span class="bullet">·</span>
+            ©
+            <a href="https://populi.co/" target="_blank" class="steem-keychain-checked">Populi</a>
+            2021            
+        </footer>
+    
+
+<div id="jGrowl" class="center jGrowl"><div class="jGrowl-notification"></div></div></body></html>

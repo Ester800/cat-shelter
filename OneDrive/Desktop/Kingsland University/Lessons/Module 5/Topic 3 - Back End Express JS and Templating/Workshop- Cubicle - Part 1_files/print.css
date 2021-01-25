@@ -1,0 +1,208 @@
+.hidden, 
+.no-print,
+body>.header, 
+#side, 
+body>.footer,
+#controltabs,
+#actions, 
+#addStuff, 
+h3 a, 
+h4 a, 
+#messagelisthead, 
+#listdiv, 
+.emailheaders a, 
+#splitbar,
+.filterdiv,
+.new_filter,
+.new-filter,
+font,
+#facebox,
+.smalltabs,
+.notesadd,
+.lefttermbutton,
+.righttermbutton,
+.controldropdown,
+.tabs,
+#account,
+#footer,
+.app_tabs,
+.nav,
+.column_header,
+.newbutton,
+#add_note_form,
+.loading_throbber,
+.controls,
+.application_section_checkbox,
+.drop-down-list,
+.controlbar {
+	display:none;
+}
+
+* {
+	float: none !important;
+	/*margin: 0 !important;*/
+	/*padding: 0 !important;*/
+	position: relative !important;
+	overflow: visible !important;
+	height: auto !important;
+    width: auto !important;
+	top: 0 !important;
+	font-family: PopuLato, "helvetica neue", helvetica, sans-serif;
+	text-align: left;
+	box-shadow: none !important;
+}
+
+body { font-size:95%; background-color:transparent; margin: 0!important; display: block !important;}
+
+a {	text-decoration:none; color:black; }
+
+.emailheaders {	margin-bottom:1em !important; }
+.emailheaders span { width:70pt !important; margin-right:9pt !important; display:block; float:left !important; color:silver; font-weight:bold; text-align:right; }
+
+.chartbox { page-break-inside:avoid; }
+/*TABLE Styles*/
+
+table   { border-collapse:collapse; border-spacing:0; clear:both; width:100% !important; margin-bottom:2em !important; }
+th, td  { color:black; border-bottom:1pt solid #ccc; font-size:.9em; padding:2pt 3pt !important; }
+td      { vertical-align: middle; }
+th      { margin:0px; border-bottom:1pt solid #ccc; font-weight:normal; }
+thead th { font-weight:bold; }
+
+th span { display:none; }
+th.right, td.right { text-align:right; }
+/*end table styles*/
+h1 { margin:0 0 1em; }
+h3 { margin:0 0 .75em; font-size:18pt; }
+h4 { margin:.25em 0 1em !important; font-size:14pt;}
+h5 { margin:.5em 0; font-size:12pt; }
+
+p { margin:0 0 1.5em !important;}
+
+.box { margin-bottom:2em !important; }
+
+.singlecol { box-shadow: none !important; }
+
+label { font-weight:bold; }
+
+#testPreview .answer { margin-bottom:2em !important; }
+#testPreview p { margin-bottom:1em !important; }
+#testPreview textarea { height:10em !important; border:none; }
+#testPreview input[type=text] { border:none; height:2em !important; }
+#testPreview input[type=radio],#testPreview input[type=checkbox] { float:left !important; }
+#testPreview .answer li { list-style: none; }
+#testPreview .answer ul { margin-left: 0px;  padding-left: 0;}
+
+.farleftcol {display:none;}
+.columnnav {display:none;}
+.showForPrintBlock {display:block;}
+.hideForPrint {display:none;}
+.float-right-for-print {
+	float: right !important;
+}
+
+.pill, .pill_edit, .badge {	color:#717171; font-size: .8em; padding: 0 6px; white-space: nowrap;}
+.course_evaluation_question_body { margin-bottom:1em; }
+.course_evaluation_question_parent { margin-bottom:3em; }
+.course_evaluation_question_response { margin-left:2em; }
+.top_eval_response, .top_eval_response .pill, .top_eval_response td,  .top_eval_response th  {color: green; }
+.course_evaluation_likert table thead tr th {text-align: center; vertical-align: bottom;}
+.course_evaluation_likert table tbody tr td {text-align: center;}
+table .center { text-align:center; }
+
+.update_section_status { background-color:transparent !important; float:right !important; }
+.application_chunk { margin:0 0 2.5em !important; }
+
+.indented { margin-bottom:1em; }
+.read-only-application .required_application_section { display:none; }
+
+.question {
+	page-break-inside: avoid;
+}
+.question-number {
+	float:left !important;
+	margin-right:.5em !important;
+}
+.question-radio,
+.question-checkbox {
+	float:left !important;
+}
+.question-answer-options-list {
+    list-style-type:none;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+
+
+.rubric-manage { 
+	border-collapse: collapse; 
+	border-spacing: 0;
+	border-color:#ccc !important;
+}
+
+.rubric-criteria-heading {
+    width: 10%;
+}
+.rubric-levels-heading {
+    width: 80%;
+}
+.rubric-manage-heading {
+    font-weight: bold;
+    text-align: center;
+    background-color: #eee;
+    padding: 8px !important;
+    border: 1px solid #ccc !important;
+}
+.rubric-name{
+	margin-bottom: .25em !important;
+}
+.rubric-description{
+	margin-bottom:1em !important;
+}
+.rubric-manage-cell {
+    padding: 10px !important;
+    border: 1px solid #ccc;
+    vertical-align: top;
+}
+.rubric-manage-criterion-levels-cell {
+    border: 1px solid #ccc;
+    vertical-align: top;
+    padding: 0;
+}
+
+
+.criterion-levels {
+    display: table;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+.criterion-levels-row {
+    display: table-row;
+}
+.criterion-level-cell {
+    display: table-cell;
+    padding: 10px;
+    /* min-width: 80px; */
+    height: 100%;
+    border-bottom: none;
+    border-left: 1px solid #ccc;
+}
+.criterion-level-cell:first-child{
+	border-left: none;
+}
+.selected_criterion_level { 
+	border:1px black solid !important; 
+	background-color:transparent; 
+}
+
+
+
+
+
+
+
+
+@media print {
+    .print-page-break-after {page-break-after: always;}
+}

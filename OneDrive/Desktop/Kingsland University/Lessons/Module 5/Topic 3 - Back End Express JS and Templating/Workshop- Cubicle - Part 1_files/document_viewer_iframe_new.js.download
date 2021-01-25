@@ -1,0 +1,669 @@
+var annotating = false;
+var redrawing = false;
+
+$(document).ready(function() {
+	console.log('viewer_new document ready');
+
+	$('.js-tip').tooltipster();
+
+	document.addEventListener('pdf_viewer_document_init', function(e) {
+		console.log('viewer_new pdf_viewer_document_init');
+
+		initializeAnnotationsGUI();
+	});
+
+	$('#viewAnnotationsToc').click(function(){
+		$(this).addClass('toggled');
+		$('#viewThumbnail').removeClass('toggled');
+		$('#annotationsTocView').show();
+		$('#thumbnailView').hide();
+	});
+
+	$('#viewThumbnail').click(function(){
+		$(this).addClass('toggled');
+		$('#viewAnnotationsToc').removeClass('toggled');
+		$('#annotationsTocView').hide();
+		$('#thumbnailView').show();
+	});
+
+	if(can_show_plagiarism_check_icon){
+		$(document).on('click', '.js-show_plagiarism_report_doc_viewer', function(e){
+			e.preventDefault();
+			send_parent_event('show_report', {'url': $(this).attr('href')});
+		});
+	}
+});
+
+function initializeAnnotationsGUI() {
+	console.log('initializeAnnotationsGUI()');
+
+	// We don't call redrawAnnotations() in here as it will get called on it's own as part of various document rendering events
+
+  	// Hook up the annotate button
+  	$('.js-annotate').mousedown(function() {
+		console.log('annotate button clicked!');
+		if (!annotating) {
+			annotateModeOn();
+		} else {
+			annotateModeOff();
+		}
+	});
+
+  	// Hook up the show/hide annotations button
+	$('a.js-toggle_annotations').mousedown(function() {
+		console.log('show_hide button clicked!');
+		$annotations_show_hide_button = $(this);
+		if($annotations_show_hide_button.hasClass('fa-eye-slash')){
+			hide_annotations();
+		} else {
+			show_annotations();
+		}
+	});
+
+	$('a.toggle_sidebar').mousedown(function(e){
+		PDFViewerApplication.pdfSidebar.toggle();
+		e.preventDefault();
+	});
+
+	$('a.prev_page').mousedown(function(e){
+		PDFViewerApplication.page--;
+		e.preventDefault();
+	});
+
+	$('a.next_page').mousedown(function(e){
+		PDFViewerApplication.page++;
+		e.preventDefault();
+	});
+
+	$('a.zoom_in').mousedown(function(e){
+		PDFViewerApplication.zoomIn();
+		e.preventDefault();
+	});
+
+	$('a.zoom_out').mousedown(function(e){
+		PDFViewerApplication.zoomOut();
+		e.preventDefault();
+	});
+
+	$('a.rotate_page').mousedown(function(e){
+		PDFViewerApplication.rotatePages(90);
+		e.preventDefault();
+	});
+
+	$('a.js-print').mousedown(function(e){
+		window.print();
+		e.preventDefault();
+	});
+
+	$('a.js-presentation-mode').mousedown(function(e){
+		PDFViewerApplication.requestPresentationMode();
+		e.preventDefault();
+	});
+
+	if(annotations){
+    	$('#viewThumbnail').removeClass('toggled');
+    	$('#viewAnnotationsToc').removeClass('toggled').addClass('toggled');
+    } else {
+    	$('#viewThumbnail').removeClass('toggled').addClass('toggled');
+    	$('#viewAnnotationsToc').removeClass('toggled');
+    }
+}
+
+function show_annotations(){
+	$annotations_show_hide_button = $('a.js-toggle_annotations');
+	$annotations = $('.annotation');
+	$annotations_show_hide_button.removeClass('fa-eye').addClass('fa-eye-slash');
+	$annotations_show_hide_button.attr('title', 'Hide Annotations');
+	$annotations.show();
+	$annotations_show_hide_button.blur();
+}
+
+function hide_annotations(){
+	$annotations_show_hide_button = $('a.js-toggle_annotations');
+	$annotations = $('.annotation');
+	$annotations_show_hide_button.removeClass('fa-eye-slash').addClass('fa-eye');
+	$annotations_show_hide_button.attr('title', 'Show Annotations');
+	$annotations.hide();
+	annotateModeOff(); // If we are in annotate mode, also leave it
+	$annotations_show_hide_button.blur();
+}
+
+function annotateModeOn(){
+	console.log('annotateModeOn()');
+	if(!can_annotate){
+		return false;
+	}
+	
+	show_annotations();
+	annotating = true;
+	$('.annotation_layer').css('pointer-events', 'all').css('cursor', 'crosshair').on('click', annotate_on_click);
+
+	$annotations_draw_button = $('.js-annotate');
+	
+	$annotations_draw_button.tooltipster('close').tooltipster('content', 'Stop annotating');
+
+	$('.annotation_instructions').slideDown(100);
+
+	$('.js-annotation_mode_cancel').click(function(event) {
+		annotateModeOff();
+	});
+}
+
+function annotateModeOff(){
+	console.log('annotateModeOff()');
+
+	if($('#facebox').length){
+		$.jGrowl('Please finish editing your annotation first', {theme: 'growlerror'});
+		return false;
+	}
+
+
+	annotating = false;
+	$('.annotation_layer').css('pointer-events', 'none').css('cursor', 'default').unbind('click', annotate_on_click);
+	
+	$annotations_draw_button = $('.js-annotate');
+	
+	$annotations_draw_button.tooltipster('close').tooltipster('content', 'Annotate this Document');
+	$annotations_draw_button.blur();
+	
+	$('.annotation_instructions').slideUp(100);
+}
+
+function drawAnnotations(){
+	annotations.forEach(function(annotation) {
+		draw_annotation(annotation);
+	});
+}
+
+function redrawAnnotations(){
+	console.log('redrawAnnotations()');
+
+	if(!can_see_annotations){
+		return false;
+	}
+
+	if(!redrawing){
+		redrawing = true;
+
+		// Don't redraw too many times pointlessly. Can happen if a user scrolls quickly through hundreds of pages.
+		setTimeout(function(){
+			$('.annotation_layer').remove();
+			$('.annotation').remove();
+
+			var $pages = $("#viewer .page");
+			$pages.each(function(){
+				var $page = $(this);
+				
+				var $annotation_layer_template = $('<div id="annotation_layer_page_' + $page.data('pageNumber') + '" data-page-no="' + $page.data('pageNumber') + '" class="annotation_layer" style="position:absolute; z-index: 1; pointer-events: none; width:' + $page.css('width') + '; height:' + $page.css('height') + ';"></div>');
+				
+				var $view_annotation_template = $('<div id="annotation_viewer_page_' + $page.data('pageNumber') + '" class="view_annotation" style="display:none;z-index:2;"><a href="#" class="hide-annotation">&#215;</a><div style="font-weight:bold;"><span class="author"></span> wrote: </div><p class="comment"></p></div>');
+				$view_annotation_template.on('click', function(event){
+			    	event.stopPropagation();
+			  	});
+
+				$annotation_layer_template.append($view_annotation_template);
+				$page.prepend($annotation_layer_template);
+			})
+		  	
+			drawAnnotations();
+			bindAnnotations('.annotation');
+			draw_annotations_toc();
+
+			//Set up Box dragging stuff
+			$('.annotation_layer').drag("start",function( ev, dd ){
+				if(annotating){
+				  	var start_y = dd.startY;
+
+					//Figure out what page we're on based on the top left corner and add that onto the dd
+					//This will change dd.page multiple times until we go too far, then flash-freeze the last good page
+					$('div.annotation_layer').each(function(){
+						var $page = $(this);
+						var $offset = $page.offset();
+						if ( start_y >= $offset.top ) {
+						 	dd.page = $page;
+
+						  	//Record all four page boundaries speed so we don't have to do the calculation a million times during drag
+						  	dd.limit = $offset; 
+						  	dd.limit.bottom = dd.limit.top + $page.height();
+						  	dd.limit.right = dd.limit.left + $page.width();
+						}
+					});
+
+				 	return $('<div class="selection annotation_box" />').appendTo( document.body );
+			 	}
+			})
+			.drag(function( ev, dd ){
+				if(annotating){
+					$( dd.proxy ).css({
+				    	top: Math.min( dd.limit.bottom, Math.max( dd.limit.top, Math.min( ev.pageY, dd.startY ) ) ),
+				    	left: Math.min( dd.limit.right, Math.max( dd.limit.left, Math.min( ev.pageX, dd.startX ) ) ),
+				    	height: Math.min((ev.pageY - dd.startY > 0 ? dd.limit.bottom - dd.startY : (dd.startY - dd.limit.top)), Math.abs( ev.pageY - dd.startY )),
+				    	width: Math.min((ev.pageX - dd.startX > 0 ? dd.limit.right - dd.startX : (dd.startX - dd.limit.left)), Math.abs( ev.pageX - dd.startX ))
+					});
+				}
+			})
+			.drag("end",function( ev, dd ){
+				if(annotating){
+				 	$( dd.proxy ).remove();
+
+					//Make sure we get the upper left corner regardless of direction they dragged
+					var x = dd.deltaX >= 0 ? dd.startX : dd.startX + dd.deltaX;
+					var y = dd.deltaY >= 0 ? dd.startY : dd.startY + dd.deltaY;
+
+					var page = dd.page;
+
+					var page_offset = page.offset(); 
+					var page_number = page.data('page-no');
+
+					//We return percentages so that we can zoom properly
+					x = ((x - page_offset.left) / page.width()) * 100;
+					y = ((y - page_offset.top) / page.height()) * 100;
+
+					if (Math.abs(dd.deltaX) < 10 || Math.abs(dd.deltaY) < 10){
+					 	var point_info = {file_id: document_id, type: 'POINT', page_number: page_number, x_pos: x, y_pos: y};
+					}
+					else {
+					 	var width = (Math.abs(dd.deltaX) / page.width()) * 100;
+					 	var height = (Math.abs(dd.deltaY) / page.height()) * 100;
+						var point_info = {file_id: document_id, type: 'BOX', page_number: page_number, x_pos: x, y_pos: y, width: width, height: height};
+					}
+
+				  	create_annotation(point_info);
+			  	} 
+			});
+
+			if(annotating){
+				annotateModeOn();
+			}
+
+			redrawing = false;
+		}, 250);
+	} else {
+		console.log('skipped redrawAnnotations because it was already happening');
+	}
+	
+}
+
+function bindAnnotations(selector){
+	// Set up click handlers on the annotations
+	$(document).off('click', '.annotation').on('click', '.annotation', function(e){
+		console.log('annotation clicked');
+		e.preventDefault();
+		e.stopPropagation();
+		if ( can_annotate && annotating ) {
+			var $annotation = $('#annotation_' + $(this).data('id'));
+			$annotation.addClass('current');
+			$('#mainContainer').addClass('graylight');
+			edit_annotation($(this).data());
+		}
+		else {
+			view_annotation($(this).data());
+		}
+		return false;
+	});
+}
+
+var annotate_on_click = function(event) {
+	console.log('annotate_on_click');
+	var page = $(this).closest('div.annotation_layer');
+	var page_offset = page.offset();
+
+	var page_number = page.data('page-no');
+
+	//We return percentages so that we can zoom properly
+	var x = ((event.pageX - page_offset.left) / page.width()) * 100;
+	var y = ((event.pageY - page_offset.top) / page.height()) * 100;
+
+	var point_info = {
+		file_id: document_id,
+		type: 'POINT',
+		page_number: page_number,
+		x_pos: x,
+		y_pos: y
+	};
+
+	create_annotation(point_info);
+};
+
+function draw_annotation(info) {
+	var $annotation_layer = $("#annotation_layer_page_" + info.page_number);
+
+	if (info.type == 'POINT' || (info.type == 'BOX' && (info.width < 1 || info.height < 1))) {
+		var width = 24;
+		var height = 16;
+
+		//Adjust the position to center given the width/height of the pin (only works perfectly at this scale but pretty close otherwise)
+		var pin_width_percent = (width / $annotation_layer.width()) * 100;
+		var pin_height_percent = (height / $annotation_layer.height()) * 100;
+		var $template = $('<div id="annotation_' + info.id + '" class="annotation annotation_bubble" title="Click to see annotation" style="position:absolute; top: ' + (info.y_pos - (pin_height_percent / 2)) + '%; left: ' + (info.x_pos - (pin_width_percent / 2)) + '%;"></div>');
+	} else if (info.type == 'BOX') {
+		var $template = $('<div id="annotation_' + info.id + '" class="annotation annotation_box" title="Click to see annotation" style="position:absolute; top: ' + info.y_pos + '%; left: ' + info.x_pos + '%; width: ' + info.width + '%; height: ' + info.height + '%;"></div>');
+	}
+
+	$template.data({
+		'id': info.id,
+		'type': info.type,
+		'comment': info.comment,
+		'added_by_name': info.added_by_name,
+		'page_number': info.page_number,
+		'x_pos': info.x_pos,
+		'y_pos': info.y_pos,
+		'width': info.width,
+		'height': info.height
+	});
+	$annotation_layer.append($template);
+}
+
+function htmlDecode(str) {
+	return String(str)
+		.replace(/&amp;/g, '&')
+		.replace(/&quot;/g, '"')
+		.replace(/&#39;/g, '\'')
+		.replace(/&lt;/g, '<')
+		.replace(/&gt;/g, '>');
+}
+
+//Draws the text list of annotations in the sidebar
+function draw_annotations_toc() {
+	var $annotations = $('.annotation');
+	var $annotations_toc = $('#annotations_toc');
+	var $ul = $annotations_toc.find('ul');
+	$ul.empty();
+
+	if ($annotations.length > 0) {
+		var last_drawn_page_number = null;
+		$annotations.each(function() {
+			var $annotation = $(this);
+			var page_number = $annotation.data('page_number');
+
+			if (page_number != last_drawn_page_number) {
+				var $li = $('<li><a class="page_link" style="font-size:1.1em; margin-top:2em; border-bottom:1px solid gray;"></a></li>');
+				$li.find('a').text('Page ' + page_number).data({
+					'page_number': page_number,
+					'id': $annotation.data('id')
+				});
+				$ul.append($li)
+				last_drawn_page_number = page_number;
+			}
+
+			var $li = $('<li><a class="annotation_link"></a></li>');
+			$li.find('a').data({
+				'id': $annotation.data('id'),
+				'page_number': page_number,
+				'x_pos': $annotation.data('x_pos'),
+				'y_pos': $annotation.data('y_pos')
+			}).text(htmlDecode($annotation.data('comment')));
+			$ul.append($li)
+		});
+
+		$annotations_toc.show();
+	} else {
+		$annotations_toc.hide();
+	}
+
+	$('.page_link').off('click').on('click', function(){
+		console.log('page_link clicked');
+		var page_number = $(this).data('page_number');
+		PDFViewerApplication.page = page_number;
+	});
+
+	$(document).off('click', '.annotation_link').on('click', '.annotation_link', function(e){
+		console.log('annotation_link clicked');
+		show_annotations(); // Unhide them
+		var page_number = $(this).data('page_number');
+		PDFViewerApplication.page = page_number;
+		$('#annotation_' + $(this).data('id')).click(); // Clicking an annotation ref from the TOC is like clicking on it directly
+		e.preventDefault();
+	});
+}
+
+//Used in read-only mode
+function view_annotation(annotation) {
+	console.log('view_annotation');
+	
+	var $annotation = $('#annotation_' + annotation.id);
+	var $page = $annotation.closest('.page');
+	var $view_annotation = $page.find('.view_annotation');
+	var $page_container = $('#mainContainer');
+	var $viewer = $('#viewer');
+
+	$view_annotation.find('.author').text(annotation.added_by_name);
+	$view_annotation.find('.comment').html(annotation.comment.replace(/\n/g, '<br>'));
+
+	if (annotation.type == 'BOX') {
+		var shift_y = 0;
+	} else {
+		var shift_y = 9;
+	}
+
+	//Calculate X
+	var annotation_popup_width = 486;
+	var annotation_width = $annotation.outerWidth();
+	var left_offset = $annotation.offset().left - $viewer.position().left;
+	var annotation_center = left_offset + (annotation_width / 2);
+	var container_width = $viewer.width();
+	var left_scroll = $viewer.scrollLeft();
+	var left_aligned = 1;
+
+	if (annotation_center < (annotation_popup_width / 2)) {
+		var x_adujst = (annotation_popup_width / 2) - annotation_center + left_scroll + 12;
+		var viewer_x_pos = annotation_center + x_adujst - (annotation_popup_width / 2);
+	} else if ((container_width - annotation_center) < (annotation_popup_width / 2)) {
+		left_aligned = 0;
+		var x_adujst = (annotation_popup_width / 2) - (container_width - annotation_center) - left_scroll + 12;
+		var viewer_x_pos = container_width - (annotation_center - x_adujst - (annotation_popup_width / 2) + annotation_popup_width);
+	} else {
+		var viewer_x_pos = left_offset + (annotation_width / 2) - (annotation_popup_width / 2) + left_scroll;
+	}
+
+	var viewer_x = ((viewer_x_pos / container_width) * 100);
+	var x_perc = viewer_x.toString() + "%";
+
+	//Calculate Y
+	var viewer_y = $annotation.offset().top + $annotation.outerHeight() + shift_y;
+
+	//Gray out all other annotations
+	$('.annotation').removeClass('current');
+	$annotation.addClass('current');
+	$page_container.addClass('graylight');
+
+	if (left_aligned) {
+		$view_annotation.css({
+			left: x_perc,
+			right: '',
+			top: viewer_y
+		});
+	} else {
+		$view_annotation.css({
+			right: x_perc,
+			left: '',
+			top: viewer_y
+		});
+	}
+
+	$view_annotation.show();
+
+	$view_annotation.off('click', '.hide-annotation').on('click', '.hide-annotation', function(e){
+		e.preventDefault();
+		$view_annotation.hide();
+		$('#mainContainer').removeClass('graylight');
+	});
+
+	$('body').off('keyup').on('keyup', function(e) {
+		if (event.keyCode == 27) {
+			$view_annotation.hide();
+			$('#mainContainer').removeClass('graylight');
+		}
+	}).off('click').one('click', function() {
+		$view_annotation.hide();
+		$('#mainContainer').removeClass('graylight');
+	});
+}
+
+function create_annotation(point_info) {
+	console.log('create_annotation()');
+	console.log(point_info);
+
+	tb_remove(); // If another annotation dialog is open, nuke it.
+	
+	var $overlay = $('#mainContainer');
+	var $template = $('.edit_annotation_template').clone();
+	$template.find('input[name=type]').val(point_info.type);
+	$template.find('textarea[name=comment]').val(point_info.comment);
+	$template.find('input[name=x_pos]').val(point_info.x_pos);
+	$template.find('input[name=y_pos]').val(point_info.y_pos);
+	$template.find('input[name=width]').val(point_info.width);
+	$template.find('input[name=height]').val(point_info.height);
+	$template.find('input[name=page_number]').val(point_info.page_number);
+	$template.find('.delete_annotation_a').hide();
+	var unique_id = Math.floor(Math.random() * 100000);
+	$template.find('form').addClass('unique-id-' + unique_id);
+	
+	tb_show('Add annotation', $template.html(), $overlay.show(), null, 'HTML');
+
+	$('form.unique-id-' + unique_id + ' button').click(function(){
+		$.ajax({
+	        url: '/router/documents/' + document_id + '/annotations/create',
+	        data: $(this).closest('form').serialize(),
+	        success: function(json_response){
+	        	var annotation = json_response['annotations'][0];
+	            annotations.push(annotation);
+	            redrawAnnotations();
+	            tb_remove();
+	            $('#mainContainer').removeClass('graylight');
+	        },
+	        error: function(response){
+	        	console.log(response.responseJSON.errors[0]);
+	        	growl_error(response.responseJSON.errors[0]);
+	        }
+	    });
+	})
+
+	$(document).off('click', '.cancel_annotation_a').on('click', '.cancel_annotation_a', function(event){
+  		event.preventDefault();
+  		$('#mainContainer').removeClass('graylight');
+  		tb_remove();
+	}).off('click', '.fb_close').on('click', '.fb_close', function(event){
+		$('#mainContainer').removeClass('graylight');
+	});
+
+	//Gray out all other annotations
+	var $page_container = $('#mainContainer');
+	$('.annotation').removeClass('current');
+}
+
+function edit_annotation(annotation) {
+	console.log('edit_annotation()');
+
+	var $annotation = $('#annotation_' + annotation.id);
+	var $page_container = $('#mainContainer');
+	var $template = $('.edit_annotation_template').clone();
+	var $form = $template.find('form');
+
+	//Have to do it this way since data() uses internal jQuery stuff, and we're about to destroy and recreate the html
+	$form.attr('data-annotation-id', annotation.id);
+
+	$template.find('input[name=type]').val(annotation.type);
+	$template.find('textarea[name=comment]').html(annotation.comment);
+	$template.find('input[name=x_pos]').val(annotation.x_pos);
+	$template.find('input[name=y_pos]').val(annotation.y_pos);
+	$template.find('input[name=page_number]').val(annotation.page_number);
+	var unique_id = Math.floor(Math.random() * 100000);
+	$template.find('form').addClass('unique-id-' + unique_id);
+
+	tb_show('Edit annotation', $template.html(), $page_container.show(), null, 'HTML');
+
+	$('form.unique-id-' + unique_id + ' button').click(function(){
+		$.ajax({
+	        url: '/router/documents/' + document_id + '/annotations/' + annotation.id + '/update',
+	        data: $(this).closest('form').serialize(),
+	        success: function(json_response){
+	        	var updated_annotation = json_response['annotations'][0];
+	            annotations.forEach(function(existing_annotation, index){
+	            	if(existing_annotation.id == updated_annotation.id){
+	            		existing_annotation.comment = updated_annotation.comment;
+	            	}
+	            });
+	            redrawAnnotations();
+	            tb_remove();
+	            $('#mainContainer').removeClass('graylight');
+	        },
+	        error: function(response){
+	        	growl_error(response.responseJSON.errors[0]);
+	        }
+	    });
+	})
+
+	//Gray out all other annotations
+	$('.annotation').removeClass('current');
+	$annotation.addClass('current');
+	$page_container.addClass('graylight');
+
+	$('.hide-annotation').click(function(e) {
+		e.preventDefault();
+		tb_remove();
+		$('#mainContainer').removeClass('graylight');
+	})
+
+	$(document).off('click', '.cancel_annotation_a').on('click', '.cancel_annotation_a', function(event){
+  		event.preventDefault();
+  		$('#mainContainer').removeClass('graylight');
+  		tb_remove();
+	}).off('click', '.delete_annotation_a').on('click', '.delete_annotation_a', function(event){
+  		event.preventDefault();
+  		if( confirm('Are you sure you want to delete this annotation?\n\nThere is no undo.') ){
+			var annotation_id = $(this).closest('form').data('annotation-id');
+		    $.get('/router/documents/' + document_id + '/annotations/' + annotation_id + '/delete', function(){
+		    	remove_annotation(annotation_id);
+		        $('#mainContainer').removeClass('graylight');
+		        redrawAnnotations();
+		        tb_remove();
+		    });
+  		}
+	}).off('click', '.fb_close').on('click', '.fb_close', function(event){
+		$('#mainContainer').removeClass('graylight');
+	});
+}
+
+function remove_annotation(annotation_id){
+	annotations.forEach(function(annotation, index) {
+		if(annotation.id == annotation_id){
+			annotations.splice(index, 1);
+			return true;
+		}
+	});
+}
+
+function show_report(url){
+	$.post(url, {}, function(html){
+        tb_remove();
+
+        if ($('#file_viewer_container').length){
+            $('#file_viewer_container').replaceWith(html);
+        }
+        else {
+            $('#content').append(html);
+        }
+
+        //bind esc to remove the viewer
+        $(document).on('keyup', function(e){
+            var keycode = e == null ? event.keyCode : keycode = e.which;
+            if (keycode == 27 && !$('#facebox').length){
+                remove_file_viewer();
+            }
+        });
+	});
+}
+
+function send_parent_event( event_name, data ){
+	if (typeof data == 'undefined') {
+		data = {};
+	}
+
+	data.event_name = event_name;
+	var json_data = JSON.stringify(data);
+
+	console.log("Sending to parent: " + json_data);
+
+	parent.postMessage(json_data, '*');
+}

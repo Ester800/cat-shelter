@@ -1,0 +1,173 @@
+/*Make the background page images undraggable*/
+img.bi { 
+	-moz-user-drag:-moz-none;
+    -webkit-user-drag:none;
+    user-drag:none;
+    -webkit-touch-callout:none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+::selection{
+	background: #afd6fd;
+}
+
+.annotation {
+	cursor:pointer;
+	pointer-events: all;
+	-webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+} 
+.annotation_bubble {  
+	background-color:yellow; 
+	height:12px; 
+	width:24px; 
+	border-radius:4px; 
+	opacity:.5; 
+	border: 1px solid goldenrod; 
+	-webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+} 
+.annotation_bubble:before { 
+	border-top: 6px solid goldenrod; 
+	border-left: 5px solid transparent; 
+	border-right: 5px solid transparent; 
+	border-bottom: 0px solid transparent; 
+	content:''; 
+	position:absolute; 
+	top:13px; 
+	left:7px;
+} 
+.annotation_bubble:after { 
+	border-top: 6px solid yellow; 
+	border-left: 5px solid transparent; 
+	border-right: 5px solid transparent; 
+	border-bottom: 0px solid transparent; 
+	content:''; 
+	position:absolute; 
+	top:12px; 
+	left:7px;
+} 
+
+.selection { position: absolute; } 
+
+.annotation_box { 
+	background-color: yellow; 
+	opacity: .3; 
+	border: 1px solid goldenrod;
+} 
+
+#annotations_toc ul {
+	padding: 0; 
+	margin-top: -1em; 
+} 
+#annotations_toc ul li {
+	margin: 1em 0; 
+	list-style-type:none;
+} 
+#annotations_toc li a {
+	color: #ddd; 
+	text-overflow: ellipsis; 
+	white-space: nowrap; 
+	text-decoration: none; 
+	display: block;  
+	overflow: hidden; 
+	outline: 0; 
+	cursor: pointer;
+} 
+
+.view_annotation {
+	display:none; 
+	position: absolute; 
+	width: 450px; 
+	max-width: 80%;
+	background-color: #FFF6D9; 
+	font-size: 14px;
+	line-height: 1.4;
+	padding: 18px; 
+	border-radius: 9px; 
+	box-shadow: 0px 5px 15px rgba(0,0,0,.25); 
+	font-family: PopuLato, "Helvetica Neue", Helvetica, sans-serif;
+	margin-bottom: 24px;
+} 
+
+#mainContainer.graylight .annotation {
+	background-color:lightgray; 
+	border-color:gray;
+} 
+
+#mainContainer.graylight .annotation.current {
+	background-color:yellow; 
+	border-color:goldenrod;
+} 
+#mainContainer.graylight .annotation.annotation_bubble:before{ 
+	border-top-color:#717171; 
+} 
+#mainContainer.graylight .annotation.annotation_bubble:after{ 
+	border-top-color: lightgray; 
+} 
+#mainContainer.graylight .annotation.annotation_bubble.current:before{ 
+	border-top-color:goldenrod; 
+}
+#mainContainer.graylight .annotation.annotation_bubble.current:after{ 
+	border-top-color:yellow; 
+}
+
+#sidebar {
+	-webkit-transition:left 500ms; 
+	-moz-transition:left 500ms; 
+	-ms-transition:left 500ms; 
+	transition:left 500ms;
+	left: -250px;
+	background-color: #333;
+	background-image: none;
+	font-size: 14px;
+	font-family:PopuLato, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+#sidebar.opened {
+	-webkit-transition:left 500ms; 
+	-moz-transition:left 500ms; 
+	-ms-transition:left 500ms; 
+	transition:left 500ms;
+	left: 0;
+}
+
+#sidebar h3 {
+	color: white !important;
+}
+
+#outline {
+	font-family: inherit;
+}
+#outline a{
+	color: #ddd;
+} 
+#outline a:hover {
+	color: white;
+}
+.pf {
+	box-shadow: 0 2px 5px rgba(0,0,0, 0.5);
+}
+
+.hiding-annotations .annotation,
+.hiding-annotations .view_annotation { 
+	display: none !important; 
+}
+
+.hide-annotation {
+	float: right;
+	text-decoration: none;
+	color: rgba(0,0,0,.25);
+	font-size: 18px;
+	line-height: 1;
+}
